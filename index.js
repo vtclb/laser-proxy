@@ -2,11 +2,10 @@ export default {
   async fetch(request) {
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     };
 
-    // Preflight
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -14,19 +13,14 @@ export default {
       });
     }
 
-    // ⛳ Google Script URL
-    const url = "https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec";
+    const rawBody = await request.text(); // читаємо тіло як текст, не json
 
-    // ⛏ читаємо тіло як текст, не JSON
-    const body = await request.text();
-
-    // ✅ надсилаємо запит без зміни
-    const response = await fetch(url, {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded", // <-- Google точно це приймає
+        "Content-Type": "application/json",
       },
-      body: body
+      body: rawBody
     });
 
     const result = await response.text();
@@ -35,7 +29,7 @@ export default {
       status: response.status,
       headers: {
         ...corsHeaders,
-        "Content-Type": "text/plain",
+        "Content-Type": "text/plain"
       },
     });
   }
