@@ -14,30 +14,19 @@ export default {
     }
 
     try {
-      const json = await request.json();
-
-      const formBody = Object.entries(json)
-        .map(([key, val]) => {
-          const encodedKey = encodeURIComponent(key);
-          const encodedValue = Array.isArray(val)
-            ? encodeURIComponent(val.join(", "))
-            : encodeURIComponent(val);
-          return `${encodedKey}=${encodedValue}`;
-        })
-        .join("&");
-
+      const raw = await request.text(); // 👈 бо ми тепер надсилаємо form-urlencoded
       const response = await fetch("https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: formBody
+        body: raw // 👈 передаємо далі як є
       });
 
-      const result = await response.text();
+      const text = await response.text();
 
-      return new Response(result, {
-        status: response.status,
+      return new Response(text, {
+        status: 200,
         headers: {
           ...corsHeaders,
           "Content-Type": "text/plain"
@@ -45,7 +34,7 @@ export default {
       });
 
     } catch (err) {
-      return new Response("❌ Проксі помилка: " + err.message, {
+      return new Response("❌ Worker помилка: " + err.message, {
         status: 500,
         headers: {
           ...corsHeaders,
