@@ -13,11 +13,21 @@ export default {
       });
     }
 
-    // читаємо тіло як JSON
-    const data = await request.json();
+    let parsed = {};
+    try {
+      const raw = await request.text();
+      parsed = JSON.parse(raw);
+    } catch (err) {
+      return new Response("❌ Помилка парсингу JSON: " + err.message, {
+        status: 400,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "text/plain"
+        }
+      });
+    }
 
-    // перетворюємо на x-www-form-urlencoded
-    const formBody = Object.entries(data)
+    const formBody = Object.entries(parsed)
       .map(([key, val]) => {
         if (Array.isArray(val)) {
           return `${encodeURIComponent(key)}=${encodeURIComponent(val.join(","))}`;
@@ -26,7 +36,6 @@ export default {
       })
       .join("&");
 
-    // надсилаємо як form
     const response = await fetch("https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec", {
       method: "POST",
       headers: {
@@ -41,7 +50,7 @@ export default {
       status: response.status,
       headers: {
         ...corsHeaders,
-        "Content-Type": "text/plain",
+        "Content-Type": "text/plain"
       },
     });
   }
