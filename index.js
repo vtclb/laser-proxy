@@ -1,32 +1,36 @@
 export default {
-  async fetch(request, env, ctx) {
-    const url = "https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec";
+  async fetch(request) {
+    try {
+      const data = await request.json();
 
-    if (request.method === "OPTIONS") {
-      return new Response(null, {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+
+      const text = await response.text();
+
+      return new Response(text, {
+        status: 200,
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-          "Access-Control-Allow-Headers": "*"
+          "Access-Control-Allow-Headers": "*",
+          "Content-Type": "text/plain"
+        }
+      });
+
+    } catch (err) {
+      return new Response("Error: " + err.message, {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "text/plain"
         }
       });
     }
-
-    const response = await fetch(url, {
-      method: request.method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: request.body,
-    });
-
-    const text = await response.text();
-
-    return new Response(text, {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "text/plain"
-      }
-    });
   }
 }
