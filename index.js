@@ -14,13 +14,16 @@ export default {
     }
 
     try {
-      const raw = await request.text(); // 👈 бо ми тепер надсилаємо form-urlencoded
+      // 🟢 НЕ JSON, а просто текст
+      const raw = await request.text();
+
+      // 🔁 Відправляємо як є, без перетворення
       const response = await fetch("https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: raw // 👈 передаємо далі як є
+        body: raw
       });
 
       const text = await response.text();
