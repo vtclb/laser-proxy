@@ -1,47 +1,42 @@
 export default {
   async fetch(request) {
+    const corsHeaders = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    };
+
+    // Preflight
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-        },
+        headers: corsHeaders,
       });
     }
 
-    const googleScriptURL = "https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec";
+    // ⛳ Google Script URL
+    const url = "https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec";
 
-    try {
-      // Прочитуємо тіло як текст (а не JSON!)
-      const rawBody = await request.text();
+    // ⛏ читаємо тіло як текст, не JSON
+    const body = await request.text();
 
-      const response = await fetch(googleScriptURL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: rawBody,
-      });
+    // ✅ надсилаємо запит без зміни
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded", // <-- Google точно це приймає
+      },
+      body: body
+    });
 
-      const responseText = await response.text();
+    const result = await response.text();
 
-      return new Response(responseText, {
-        status: response.status,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "text/plain",
-        },
-      });
-    } catch (err) {
-      return new Response("❌ Proxy error: " + err.message, {
-        status: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "text/plain",
-        },
-      });
-    }
+    return new Response(result, {
+      status: response.status,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "text/plain",
+      },
+    });
   }
 }
