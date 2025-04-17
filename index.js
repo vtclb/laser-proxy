@@ -13,14 +13,26 @@ export default {
       });
     }
 
-    const rawBody = await request.text(); // читаємо тіло як текст, не json
+    // читаємо тіло як JSON
+    const data = await request.json();
 
+    // перетворюємо на x-www-form-urlencoded
+    const formBody = Object.entries(data)
+      .map(([key, val]) => {
+        if (Array.isArray(val)) {
+          return `${encodeURIComponent(key)}=${encodeURIComponent(val.join(","))}`;
+        }
+        return `${encodeURIComponent(key)}=${encodeURIComponent(val)}`;
+      })
+      .join("&");
+
+    // надсилаємо як form
     const response = await fetch("https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: rawBody
+      body: formBody,
     });
 
     const result = await response.text();
@@ -29,7 +41,7 @@ export default {
       status: response.status,
       headers: {
         ...corsHeaders,
-        "Content-Type": "text/plain"
+        "Content-Type": "text/plain",
       },
     });
   }
