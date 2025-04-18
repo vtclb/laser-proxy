@@ -16,16 +16,15 @@ export default {
     try {
       const raw = await request.text(); // <-- тут точно НЕ .json()
 
-      const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: raw
-        }
-      );
+     const response = await fetch(
+  "https://script.google.com/macros/s/AKfycbxcKOjv2XdB9bsxAFE4B5n1Iqd1H4TWHDsQAMq_sHA5crar5uLaXL3B3JgYs43l65SHoA/exec",
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: raw
+  }
+);
+
 
       const text = await response.text();
 
