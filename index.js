@@ -14,17 +14,18 @@ export default {
     }
 
     try {
-      // 🟢 НЕ JSON, а просто текст
-      const raw = await request.text();
+      const raw = await request.text(); // <-- тут точно НЕ .json()
 
-      // 🔁 Відправляємо як є, без перетворення
-      const response = await fetch("https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: raw
-      });
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbx-O8cd8NWEaZbNzV5UrpGpfnZz_qPyQ_EV3roWGLivLDCrlRM72hqGdjUCIBs_tHwZTw/exec",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: raw
+        }
+      );
 
       const text = await response.text();
 
