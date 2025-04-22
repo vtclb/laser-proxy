@@ -4,8 +4,8 @@ export default {
     if (request.method==='OPTIONS') return new Response(null,{status:204,headers:cors});
 
     const sheetUrls = {
-      kids:   'https://docs.google.com/spreadsheets/d/e/.../pub?gid=1648067737&single=true&output=csv',
-      sunday: 'https://docs.google.com/spreadsheets/d/e/.../pub?gid=1286735969&single=true&output=csv'
+      kids:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzum1H-NSUejvB_XMMWaTs04SPz7SQGpKkyFwz4NQjsN8hz2jAFAhl-jtRdYVAXgr36sN4RSoQSpEN/pub?gid=1648067737&single=true&output=csv',
+      sunday: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzum1H-NSUejvB_XMMWaTs04SPz7SQGpKkyFwz4NQjsN8hz2jAFAhl-jtRdYVAXgr36sN4RSoQSpEN/pub?gid=1286735969&single=true&output=csv'
     };
 
     const url = new URL(request.url);
