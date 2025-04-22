@@ -1,49 +1,40 @@
 export default {
   async fetch(request) {
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+    const cors = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
     };
 
-    if (request.method === "OPTIONS") {
-      return new Response(null, {
-        status: 204,
-        headers: corsHeaders,
-      });
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: cors });
     }
 
-    try {
-      const raw = await request.text(); // <-- тут точно НЕ .json()
+    const sheetUrls = {
+      kids:   'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzum1H-NSUejvB_XMMWaTs04SPz7SQGpKkyFwz4NQjsN8hz2jAFAhl-jtRdYVAXgr36sN4RSoQSpEN/pub?gid=1648067737&single=true&output=csv',
+      sunday: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSzum1H-NSUejvB_XMMWaTs04SPz7SQGpKkyFwz4NQjsN8hz2jAFAhl-jtRdYVAXgr36sN4RSoQSpEN/pub?gid=1286735969&single=true&output=csv'
+    };
 
-     const response = await fetch(
-  "https://script.google.com/macros/s/AKfycbxcKOjv2XdB9bsxAFE4B5n1Iqd1H4TWHDsQAMq_sHA5crar5uLaXL3B3JgYs43l65SHoA/exec",
-  {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: raw
-  }
-);
-
-
-      const text = await response.text();
-
-      return new Response(text, {
-        status: 200,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "text/plain"
-        }
-      });
-
-    } catch (err) {
-      return new Response("❌ Worker помилка: " + err.message, {
-        status: 500,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "text/plain"
-        }
-      });
+    const url = new URL(request.url);
+    if (request.method === 'GET') {
+      const league = url.searchParams.get('league');
+      const csvUrl = sheetUrls[league] || sheetUrls.kids;
+      const res = await fetch(csvUrl);
+      const text = await res.text();
+      return new Response(text, { status: 200, headers: { ...cors, 'Content-Type': 'text/plain' } });
     }
+
+    // POST -> Apps Script Version 4
+    if (request.method === 'POST') {
+      const raw = await request.text();
+      const resp = await fetch(
+        'https://script.google.com/macros/s/AKfycby7iFgWweOSzfSF07sTAPye4N3pDZVE8CCs0gXF5Miz0xhtGiQSQSsVCFDXy0zBD4kQzg/exec',
+        { method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'}, body: raw }
+      );
+      const t = await resp.text();
+      return new Response(t, { status: 200, headers: { ...cors, 'Content-Type': 'text/plain' } });
+    }
+
+    return new Response('Method not allowed', { status:405, headers: cors });
   }
-}
+};
