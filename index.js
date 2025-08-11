@@ -19,7 +19,7 @@ export default {
     if (request.method === 'POST') {
       const raw = await request.text();
       const resp = await fetch(
-        'https://script.google.com/macros/s/AKfycby65ks_P5o_-cM3dT37xfhw_9iEG3YF4cPdATSZVym_HsYpY9I_n6JDpe1eZ9Rv3OsFyg/exec',
+        'https://script.google.com/macros/s/AKfycbxaISxiRGrsO4IS3Dy5T-y2pBpOfHAWCL0WTvuQFp_ZSH0NvSY2A5LhJxdKul5F2Kz4iw/exec',
         { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: raw }
       );
       const t = await resp.text();
