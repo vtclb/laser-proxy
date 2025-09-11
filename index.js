@@ -36,7 +36,7 @@ export default {
     // ---- POST: forward to GAS ----
     if (request.method === 'POST') {
       // Вкажи тут НОВИЙ JSON URL введення в дію:
-      const GAS_JSON_EXEC = 'https://script.google.com/macros/s/AKfycbyXQz_D2HMtVJRomi83nK3iuIMSPKOehg2Lesj7IvHE1TwpqCiHqVCPwsvboxigvV1yIA/exec';
+      const GAS_JSON_EXEC = 'https://script.google.com/macros/s/AKfycbwubiypVk99U_BJnV3aWLeXDAVTgNsq3IiEE20QECnSKHPf7yLZdcMx0bZMWL_jsF4gcw/exec';
       // Якщо десь лишився старий form-urlencoded (legacy saveResult) — можна вказати окремо:
       const GAS_FORM_EXEC = GAS_JSON_EXEC; // або інший exec, якщо так налаштовано
 
