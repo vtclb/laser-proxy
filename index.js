@@ -4,7 +4,7 @@ export default {
     const url = new URL(request.url);
 
     // ---- CONFIG: жорстко вшитий GAS /exec ----
-    const BACKEND = 'https://script.google.com/macros/s/AKfycbx4MNY6MpV90LiF9lN42BZ4CYle83dCC72WfGCINk-pTeHcpCc7WdxL2QtHGIqIBodf/exec';
+    const BACKEND = 'https://script.google.com/macros/s/AKfycbyDdfnyXW_RPX3TWN-WLK5whqS366ZhacX1nYJ4tVkfx898_CHhAZDB13eTYKgn5n7Q/exec';
 
     // ---- CORS (віддзеркалюємо Origin) ----
     const origin = request.headers.get('Origin') || '*';
